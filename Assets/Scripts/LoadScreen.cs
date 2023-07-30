@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,9 @@ using UnityEngine.UI;
 public class LoadScreen : MonoBehaviour
 {
     public GameObject LoadingScreen;
-
     public Slider scale;
+
+    private float _progress;
 
 
     public void Loading(int sceneId)
@@ -26,24 +28,17 @@ public class LoadScreen : MonoBehaviour
         
         while (!loadAsync.isDone)
         {
-            scale.value = loadAsync.progress;
+            var diff = loadAsync.progress - _progress;
+            _progress += diff == 0 ? 0 : Math.Sign(diff) / 100f;
+            scale.value = Math.Min(_progress, 0.9f);
+            // Debug.Log($"{_progress}  {loadAsync.progress}");
             yield return null;
             
-            if (loadAsync.progress >= .9f && !loadAsync.allowSceneActivation)
+            if (_progress >= .9f && !loadAsync.allowSceneActivation)
             {
-                yield return new WaitForSeconds(2.2f);
+                yield return new WaitForSeconds(0.3f);
                 loadAsync.allowSceneActivation = true;
             }
-        
-            
-        }
-        
-        var plane = new Plane(Vector3.up, Vector3.zero);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
-        if (plane.Raycast(ray, out float position))
-        {
-            Vector3 worldPosition = ray.GetPoint(position);
         }
     }
     
