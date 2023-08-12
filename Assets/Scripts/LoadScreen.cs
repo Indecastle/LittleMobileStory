@@ -29,7 +29,7 @@ public class LoadScreen : MonoBehaviour
         while (!loadAsync.isDone)
         {
             var diff = loadAsync.progress - _progress;
-            _progress += diff == 0 ? 0 : Math.Sign(diff) / 100f;
+            _progress += diff == 0 ? 0 : Math.Sign(diff) / 100f * 2;
             scale.value = Math.Min(_progress, 0.9f);
             // Debug.Log($"{_progress}  {loadAsync.progress}");
             yield return null;
@@ -41,7 +41,7 @@ public class LoadScreen : MonoBehaviour
             }
         }
     }
-    
+
     void Awake()
     {
         Debug.Log("Loading Awake");
